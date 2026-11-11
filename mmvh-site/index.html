@@ -205,7 +205,8 @@
   #fly { position: fixed; z-index: 101; left: 0; top: 0; pointer-events: none; opacity: 0; transform-origin: top left; }
 
   @media (max-width: 960px) {
-    nav.links a:not(.btn) { display: none; }
+    nav.links a:not(.btn):not([href="#links"]) { display: none; }
+    nav.links { gap: 16px; }
     .hero { padding-top: 96px; }
     .hero-grid, .access-grid, .desk-grid, .links-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
     .facts-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
