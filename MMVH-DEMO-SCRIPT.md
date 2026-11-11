@@ -11,6 +11,9 @@
 7. **Discord**, "Arena Demo" server, #agent-output
 8. **Gmail** inbox
 
+**Pet owner chat (standalone link, hosted by n8n):** https://mhaidervyspir.app.n8n.cloud/webhook/5f972df9-8e62-4072-a72f-7f86fa43cb23/chat
+No request ID to type. It remembers an unfinished request within the conversation, so "3:45 pm works" completes a booking it just asked about.
+
 Webhook, if a judge wants raw JSON: `POST https://mhaidervyspir.app.n8n.cloud/webhook/mmvh-frontdesk` with `request_id` and `message` (optional `owner_name`, `email`, `pet_name`, `species`).
 
 ## Before the judge arrives
@@ -21,6 +24,31 @@ Webhook, if a judge wants raw JSON: `POST https://mhaidervyspir.app.n8n.cloud/we
 ## The opening (20 seconds)
 
 "This is a front desk for a vet clinic that never invents a booking. Claude reads the message and decides what to do. But it can only act through four tools, and each tool checks every clinic rule in code against the live calendar. What the customer sees is the tool's result, not the model's words."
+
+## "What is this project doing?" (say this in plain words)
+
+"It is the front desk of a vet clinic, run by an AI. A pet owner writes a normal message, like 'book a wellness exam for my dog Milo on the 16th at 10'. The assistant works out what they want, checks the real Google Calendar, and then books, cancels or moves the appointment. It writes every booking to a Google Sheet and logs every request. If details are missing it asks. If the pet sounds sick, it does not book or give advice; it hands the case to a human and alerts staff on Discord."
+
+Three ways in, all going to the same brain: a **chat page** for pet owners, a **form** for judges who want to set the request ID, and a **webhook** for scripts.
+
+## "How are the workflows built?" (open n8n and point)
+
+There are six workflows. Explain them in this order:
+
+| Workflow | One line | What to point at |
+|---|---|---|
+| **MMVH 2 - AI Front Desk (main)** | The brain. Every request goes through here. | Left to right: Webhook, replay check (State tab), the **AI Agent** node with Claude and its 4 tools, the **Truth Guard** code node, then CallLog and the reply. The branch at the end is the Discord staff alert. |
+| **MMVH 1 - Booking Engine** | The four tools. This is where rules are enforced. | "Load Config" reads the rules from the Sheet. "Plan" checks service, species and required details. "Read Calendar" gets live events. "Decide" checks every time rule and builds alternatives. Then three branches: book (with rollback), cancel, reschedule. |
+| **MMVH 3 - Judge Form** | The form page. | Form, send to the main webhook, show the result card. |
+| **MMVH 6 - Pet Owner Chat** | The chat page. | Chat trigger, add an automatic request ID, send to the main webhook, reply. |
+| **MMVH 4 - Judge Access** | Shares calendars and Sheet with a judge. | PIN check, three share calls, summary. |
+| **MMVH 5 - Error Handler** | Runs only if another workflow crashes. | Logs an ERROR row and alerts Discord. |
+
+MMVH 0 created the calendars and the Sheet once at the start. MMVH 9 is an unpublished test helper.
+
+**The one idea to get across:** the AI Agent node decides, and the engine workflow enforces. The agent's four tools are "Call n8n Workflow" tools that all point at the engine, each with a different action. So the model can ask for a booking, but only code can make one.
+
+**If they ask why two workflows and not one:** the engine is reused by all four tools, it can be tested on its own, and it keeps the rules out of the prompt.
 
 ## The live demo (3 to 4 minutes)
 

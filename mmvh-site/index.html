@@ -180,6 +180,16 @@
   .tries button { text-align: left; background: none; border: 0; border-bottom: 1px solid var(--rule); padding: 12px 0; font: 400 13.5px/1.45 var(--mono); color: var(--ink); cursor: pointer; }
   .tries button:hover { color: var(--action); }
 
+  /* links: a plain directory */
+  .links-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; }
+  .links-grid h3 { font: 600 1.4rem/1.2 var(--display); margin: 0 0 6px; }
+  .links-grid .note { font-size: 14px; color: var(--ink-2); margin: 0 0 16px; }
+  .lk { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 16px; align-items: center; padding: 14px 0; border-top: 1px solid var(--rule); }
+  .lk:last-child { border-bottom: 1px solid var(--rule); }
+  .lk b { font: 600 15.5px var(--ui); }
+  .lk code { grid-column: 1; font: 400 12.5px/1.45 var(--mono); color: var(--ink-2); overflow-wrap: anywhere; }
+  .lk .acts { grid-row: 1 / span 2; grid-column: 2; display: flex; gap: 8px; }
+  .lk .btn { min-height: 36px; padding: 0 14px; font-size: 13.5px; }
   footer { background: var(--stage); color: var(--on-stage); padding: 72px 0 40px; }
   footer h2 { max-width: 16ch; }
   footer .cta { margin-bottom: 56px; }
@@ -197,7 +207,7 @@
   @media (max-width: 960px) {
     nav.links a:not(.btn) { display: none; }
     .hero { padding-top: 96px; }
-    .hero-grid, .access-grid, .desk-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+    .hero-grid, .access-grid, .desk-grid, .links-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
     .facts-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .fact:nth-child(3) { border-left: 0; padding-left: 0; }
     .fact:nth-child(n+3) { border-top: 1px solid var(--rule); }
@@ -241,6 +251,7 @@
       <a href="#access">Judge access</a>
       <a href="#how">How it works</a>
       <a href="#cases">Edge cases</a>
+      <a href="#links">All links</a>
       <a class="btn btn-primary" href="#desk">Try it live</a>
     </nav>
   </div>
@@ -357,6 +368,7 @@
         <div class="kicker">Live front desk</div>
         <h2 style="margin:14px 0 18px">Ask it anything a pet owner would.</h2>
         <p class="lede">This talks to the same n8n workflow as the judge form. Bookings made here are real: they appear in the calendar and the Sheet.</p>
+        <p style="margin:14px 0 0;font-size:15px">Want it on its own page? <a href="https://mhaidervyspir.app.n8n.cloud/webhook/5f972df9-8e62-4072-a72f-7f86fa43cb23/chat" target="_blank" rel="noopener">Open the pet owner chat</a>.</p>
         <div class="who">
           <input id="owner" placeholder="Owner name" autocomplete="name" aria-label="Owner name">
           <input id="email" type="email" placeholder="Email" autocomplete="email" aria-label="Email">
@@ -369,6 +381,27 @@
           <textarea id="deskText" placeholder="Book a wellness exam for my dog Milo on 16 November 2026 at 10:00" aria-label="Message" required></textarea>
           <button class="btn btn-primary" id="deskSend" type="submit">Send</button>
         </form>
+      </div>
+    </div>
+  </section>
+
+  <section id="links">
+    <div class="wrap">
+      <div class="sec-head rise">
+        <div class="kicker">All links</div>
+        <h2>Everything, in one place.</h2>
+      </div>
+      <div class="links-grid">
+        <div class="rise">
+          <h3>For judges</h3>
+          <p class="note">Open to anyone. Calendars and the Sheet need the access above.</p>
+          <div id="linksPublic"></div>
+        </div>
+        <div class="rise">
+          <h3>Behind the scenes</h3>
+          <p class="note">The n8n workflows. These need our n8n login.</p>
+          <div id="linksTeam"></div>
+        </div>
       </div>
     </div>
   </section>
@@ -579,6 +612,43 @@
     });
     chips.appendChild(chip);
   });
+
+  /* all links */
+  var N8N = 'https://mhaidervyspir.app.n8n.cloud';
+  var LINKS_PUBLIC = [
+    ['Pet owner chat', N8N + '/webhook/5f972df9-8e62-4072-a72f-7f86fa43cb23/chat', 1],
+    ['Judge form (set your own request ID)', N8N + '/form/mmvh-frontdesk-form', 1],
+    ['Webhook, POST JSON: request_id, message', N8N + '/webhook/mmvh-frontdesk', 0],
+    ['Records Sheet: Config, Appointments, CallLog', 'https://docs.google.com/spreadsheets/d/19232hx8Z32nSscFxJ2nxFglS_3EpHctNVDC4KiOnUoc', 1],
+    ['Google Calendar: MMVH - Mr Saanp, MMVH - Miss Loomri', 'https://calendar.google.com/calendar/u/0/r/week/2026/11/16', 1]
+  ];
+  var LINKS_TEAM = [
+    ['MMVH 2 - AI Front Desk (the agent)', N8N + '/workflow/mgAPSas5ksTznW1P', 1],
+    ['MMVH 1 - Booking Engine (the four tools)', N8N + '/workflow/29Welw7FsupTWekG', 1],
+    ['MMVH 6 - Pet Owner Chat', N8N + '/workflow/RlQwNbOwlu8zQZYB', 1],
+    ['MMVH 3 - Judge Form', N8N + '/workflow/6Cr9fpKwtRyX6w7b', 1],
+    ['MMVH 4 - Judge Access', N8N + '/workflow/XMc1YG29zO9MrTOc', 1],
+    ['MMVH 5 - Error Handler', N8N + '/workflow/3OafvGj3EdMPSgpl', 1],
+    ['Discord staff alerts: Arena Demo, #agent-output', 'https://discord.com/channels/@me', 1],
+    ['Confirmation emails: Gmail inbox', 'https://mail.google.com', 1]
+  ];
+  function fillLinks(id, list) {
+    var box = document.getElementById(id);
+    list.forEach(function (it) {
+      var row = el('div', 'lk'); row.appendChild(el('b', '', it[0])); row.appendChild(el('code', '', it[1]));
+      var acts = el('div', 'acts');
+      var copy = el('button', 'btn btn-ghost', 'Copy'); copy.type = 'button';
+      copy.addEventListener('click', function () {
+        var done = function () { copy.textContent = 'Copied'; setTimeout(function () { copy.textContent = 'Copy'; }, 1400); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(it[1]).then(done, function () { copy.textContent = 'Select the text'; });
+        else copy.textContent = 'Select the text';
+      });
+      acts.appendChild(copy);
+      if (it[2]) { var open = el('a', 'btn btn-primary', 'Open'); open.href = it[1]; open.target = '_blank'; open.rel = 'noopener'; acts.appendChild(open); }
+      row.appendChild(acts); box.appendChild(row);
+    });
+  }
+  fillLinks('linksPublic', LINKS_PUBLIC); fillLinks('linksTeam', LINKS_TEAM);
 
   /* judge access */
   var shareForm = document.getElementById('shareForm'), shareBtn = document.getElementById('shareBtn'), shareMsg = document.getElementById('shareMsg'), shareOut = document.getElementById('shareOut');
