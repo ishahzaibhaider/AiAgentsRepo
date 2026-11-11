@@ -19,7 +19,7 @@ Webhook, if a judge wants raw JSON: `POST https://mhaidervyspir.app.n8n.cloud/we
 ## Before the judge arrives
 
 - On the site, in "Give the judge the keys", enter the judge's email and the access PIN. If it fails, share by hand: in Google Calendar open each MMVH calendar's settings and add the judge with "Make changes to events"; in the Sheet click Share and add them as Viewer.
-- **Calendar time zone.** Events are stored in Phoenix time. Your Google Calendar shows them in Pakistan time, so a 10:00 appointment appears at 10:00 PM. Say this before anyone asks, or add Phoenix as a second time zone in Calendar settings so both show.
+- **Calendar time zone.** Events are stored in Phoenix time. Your Google Calendar is set to GMT, so a 10:00 appointment shows at 5:00 PM; a judge on Pakistan time sees 10:00 PM. Say this before anyone asks, or set Calendar Settings > Time zone to Phoenix so it matches.
 
 ## The opening (20 seconds)
 
